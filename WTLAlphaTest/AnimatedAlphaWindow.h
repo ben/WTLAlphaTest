@@ -19,7 +19,7 @@ public:
 	void Initialize();
 
 protected:
-	void Draw(CWTLAlphaWindow::BitmapPtr surface_IO);
+	void Update();
 
 private:
 	static void UpdateCallback(CAnimatedAlphaWindow *obj) { obj->Update(); }

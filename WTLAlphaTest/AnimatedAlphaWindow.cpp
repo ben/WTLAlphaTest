@@ -3,20 +3,44 @@
 
 using namespace Gdiplus;
 
-void CAnimatedAlphaWindow::Draw( CWTLAlphaWindow::BitmapPtr surface_IO )
+void CAnimatedAlphaWindow::Update( )
 {
 	if (!mVar1) return;
 
-	Graphics g(surface_IO.get());
-	g.SetSmoothingMode(SmoothingModeHighQuality);
-	g.Clear(Color(10,0,0,0));
+	{
+		Graphics g(mBackbuffer.get());
+		g.SetSmoothingMode(SmoothingModeHighQuality);
+		g.Clear(Color(10,0,0,0));
 
-	// Animated pen width
-	double width;
-	assert(SUCCEEDED(mVar1->GetValue(&width)));
+		// Animated pen width
+		double width;
+		assert(SUCCEEDED(mVar1->GetValue(&width)));
 
-	Pen p(Color(128,255,0,0), (REAL)width);
-	g.DrawEllipse(&p, 100,100, 500,500);
+		Pen p(Color(128,255,0,0), (REAL)width);
+		g.DrawEllipse(&p, 100,100, 500,500);
+	}
+
+	// Create a memory DC
+	HDC screenDC = ::GetDC(NULL);
+	WTL::CDC memDC;
+	memDC.CreateCompatibleDC(screenDC);
+	::ReleaseDC(NULL, screenDC);
+
+	// Copy the input bitmap and select it into the DC
+	WTL::CBitmap localBmp;
+	mBackbuffer->GetHBITMAP(Color(0,0,0,0), &localBmp.m_hBitmap);
+	HBITMAP hOldBmp = memDC.SelectBitmap(localBmp);
+
+	// Update the display
+	POINT p = {0};
+	POINT loc = {mX, mY};
+	SIZE s = { mW, mH };
+	BLENDFUNCTION bf = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+	BOOL b = ::UpdateLayeredWindow(m_hWnd, NULL, &loc, &s, memDC, &p, RGB(0,255,255), &bf, ULW_ALPHA);
+	//ATLTRACE("ULW returns %d, err=%x\n", b, GetLastError());
+
+	// Cleanup
+	memDC.SelectBitmap(hOldBmp);
 }
 
 int CAnimatedAlphaWindow::OnCreate( LPCREATESTRUCT lpCreateStruct )

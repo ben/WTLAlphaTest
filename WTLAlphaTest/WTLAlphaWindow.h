@@ -20,9 +20,10 @@ public:
 
 protected:
 	typedef boost::shared_ptr<Gdiplus::Bitmap> BitmapPtr;
+	BitmapPtr mBackbuffer;
 
-	virtual void Draw(BitmapPtr surface_IO) { }
-	void Update();
+	virtual void Update()=0;
+	LONG mX, mY, mW, mH;
 
 private:
 	int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -30,6 +31,4 @@ private:
 	void OnShowWindow(BOOL bShow, UINT nStatus);
 	void RefreshSize();
 
-	BitmapPtr mBackbuffer;
-	LONG mX, mY, mW, mH;
 };
