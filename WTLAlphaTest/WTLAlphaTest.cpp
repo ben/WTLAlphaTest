@@ -13,12 +13,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
+	CoInitialize(NULL);
+
 	ULONG_PTR token;
 	{
 		Gdiplus::GdiplusStartupInput gdisi;
-		Gdiplus::GdiplusStartup(&token, &gdisi, NULL);
+		Gdiplus::Status s = Gdiplus::GdiplusStartup(&token, &gdisi, NULL);
+		ATLTRACE("GDI+ init returned %d\n", s);
 	}
-	CoInitialize(NULL);
 
 	CAnimatedAlphaWindow wnd;
 	wnd.Initialize();
@@ -27,13 +29,5 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	WTL::CMessageLoop loop;
 	return loop.Run();
-
-	//MSG msg;
-	//while (GetMessage(&msg, NULL, 0, 0))
-	//{
-	//	TranslateMessage(&msg);
-	//	DispatchMessage(&msg);
-	//}
-	//return msg.wParam;
 }
 

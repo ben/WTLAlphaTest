@@ -19,7 +19,7 @@ void GdiplusDrawer::Update( IUIAnimationVariable *var_I )
 {
 	// Animated pen animVar
 	double animVar;
-	assert(SUCCEEDED(var_I->GetValue(&animVar)));
+	var_I->GetValue(&animVar);
 
 	{
 		Graphics g(mBackbuffer.get());
