@@ -70,14 +70,17 @@ void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
 	ASSERT_SUCCEEDED(storyboard->Schedule(timeNow));
 }
 
-void CAnimatedAlphaWindow::OnRButtonUp( UINT nFlags, CPoint point )
+void CAnimatedAlphaWindow::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
+	if (nChar != ' ') return;
+
 	if (mCurrentDrawer == mD2DWICDrawer.get())
 		mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
 	else
 		mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
 	Update();
 }
+
 void CAnimatedAlphaWindow::UpdateSize()
 {
 	mGdiDrawer->Initialize(m_hWnd);
@@ -92,3 +95,5 @@ void CAnimatedAlphaWindow::Update( )
 {
 	mCurrentDrawer->Update(mVar1);
 }
+
+
