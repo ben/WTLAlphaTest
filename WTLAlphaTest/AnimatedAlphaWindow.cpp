@@ -23,13 +23,9 @@ void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
 
 	// Create a transition
 	CComPtr<IUIAnimationTransition> transition;
-	ATLTRACE("Animating to %.0f\n", mNextAnimationValue);
-	//mTransLib->CreateSmoothStopTransition(1.0,
-	//	mNextAnimationValue, &transition);
-	ASSERT_SUCCEEDED(mTransLib->CreateAccelerateDecelerateTransition(
-							  0.5,
-							  mNextAnimationValue,
-							  0.2, 0.8, &transition));
+	//ATLTRACE("Animating to %.0f\n", mNextAnimationValue);
+	ASSERT_SUCCEEDED(mTransLib->CreateSmoothStopTransition(0.5,
+				mNextAnimationValue, &transition));
 	mNextAnimationValue = (mNextAnimationValue == LARGE ? SMALL : LARGE);
 
 	// Add the transition
