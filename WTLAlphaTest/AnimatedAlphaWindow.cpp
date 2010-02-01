@@ -1,8 +1,6 @@
 #include "StdAfx.h"
 #include "AnimatedAlphaWindow.h"
 
-using namespace Gdiplus;
-
 #define ASSERT_SUCCEEDED(expr)						\
 	do {														\
 		HRESULT __hr__ = (expr);						\
@@ -72,4 +70,12 @@ void CAnimatedAlphaWindow::Initialize()
 void CAnimatedAlphaWindow::UpdateSize()
 {
 	mGdiDrawer->UpdateSize(CRect(mX, mY, mW, mH));
+}
+
+CAnimatedAlphaWindow::CAnimatedAlphaWindow()
+	: mNextAnimationValue(5.)
+	, mGdiDrawer( new GdiplusDrawer() )
+	, mD2DWICDrawer( new CD2DWICDrawer() )
+{
+
 }

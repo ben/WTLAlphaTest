@@ -2,15 +2,13 @@
 #include "WTLFullDesktopLayeredWindow.h"
 #include "AnimationTimerEventHandler.h"
 #include "GdiplusDrawer.h"
+#include "D2DWICDrawer.h"
 
 class CAnimatedAlphaWindow :
 	public CWTLFullDesktopLayeredWindow
 {
 public:
-	CAnimatedAlphaWindow()
-		: mNextAnimationValue(5.)
-		, mGdiDrawer(new GdiplusDrawer())
-	{}
+	CAnimatedAlphaWindow();
 
 	BEGIN_MSG_MAP(CAnimatedAlphaWindow)
 		MSG_WM_LBUTTONUP(OnLButtonUp)
