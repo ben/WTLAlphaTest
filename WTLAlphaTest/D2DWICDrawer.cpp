@@ -75,17 +75,12 @@ void CD2DWICDrawer::CreateDeviceResources()
 	mD2DRenderTarget.Release();
 	mD2DFactory->CreateWicBitmapRenderTarget(mWICbmp, properties, &mD2DRenderTarget);
 	mD2DRenderTarget.QueryInterface(&mInteropTarget);
-
-	mBrush.Release();
-	mD2DRenderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::Red, 0.5), &mBrush);
 }
 
 void CD2DWICDrawer::DiscardDeviceResources()
 {
 	mD2DRenderTarget.Release();
 	mInteropTarget.Release();
-	mBrush.Release();
 }
 
 void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
@@ -105,14 +100,19 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
 	// Get value of animated variable
 	double animVar;
 	var_I->GetValue(&animVar);
+	FLOAT alpha = (FLOAT)(animVar / 100.);
 
 	// Do some drawing here
-	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, 0.1f));
+	CComPtr<ID2D1SolidColorBrush> brush;
+	mD2DRenderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::Red, alpha), &brush);
+
+	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, alpha));
 	mD2DRenderTarget->DrawEllipse(
 		D2D1::Ellipse(
 			D2D1::Point2F(cx,cy),
 			rx,ry),
-		mBrush, (FLOAT)animVar);
+		brush, (FLOAT)animVar);
 
 	// Text label
 	{
@@ -122,7 +122,7 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
 			(FLOAT)mLocation.y,
 			(FLOAT)mLocation.x+w,
 			(FLOAT)mLocation.y+h};
-		mD2DRenderTarget->DrawText(text.c_str(), text.length(), mDWTextFormat, textRect, mBrush);
+		mD2DRenderTarget->DrawText(text.c_str(), text.length(), mDWTextFormat, textRect, brush);
 	}
 
 	// Update the display

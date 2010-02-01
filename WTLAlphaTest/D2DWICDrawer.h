@@ -19,7 +19,6 @@ private:
 	CComPtr<ID2D1Factory> mD2DFactory;
 	CComPtr<ID2D1RenderTarget> mD2DRenderTarget;
 	CComPtr<ID2D1GdiInteropRenderTarget> mInteropTarget;
-	CComPtr<ID2D1SolidColorBrush> mBrush;
 
 	// WIC
 	CComPtr<IWICImagingFactory> mWICFactory;

@@ -17,17 +17,19 @@ void GdiplusDrawer::UpdateSize( WTL::CRect rect_I )
 
 void GdiplusDrawer::Update( IUIAnimationVariable *var_I )
 {
+	// Animated pen animVar
+	double animVar;
+	assert(SUCCEEDED(var_I->GetValue(&animVar)));
+
 	{
 		Graphics g(mBackbuffer.get());
 		g.SetSmoothingMode(SmoothingModeHighQuality);
-		g.Clear(Color(26,0,0,0));
 
-		// Animated pen width
-		double width;
-		assert(SUCCEEDED(var_I->GetValue(&width)));
+		BYTE alpha = (BYTE)(255 * animVar / 100);
+		g.Clear(Color(alpha,0,0,0));
 
 		// Ellipse
-		Pen p(Color(128,255,0,0), (REAL)width);
+		Pen p(Color(alpha,255,0,0), (REAL)animVar);
 		g.DrawEllipse(&p, 100,100, mBackbuffer->GetWidth()-200, mBackbuffer->GetHeight()-200);
 
 		// Label
