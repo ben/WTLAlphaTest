@@ -10,31 +10,13 @@
 		assert(SUCCEEDED(__hr__));						\
 	} while (0)
 
-void CAnimatedAlphaWindow::Update( )
+CAnimatedAlphaWindow::CAnimatedAlphaWindow()
+: mNextAnimationValue(SMALL)
+, mGdiDrawer( new GdiplusDrawer() )
+, mD2DWICDrawer( new CD2DWICDrawer() )
+, mCurrentDrawer( NULL )
 {
-	mCurrentDrawer->Update(mVar1);
-}
-
-void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
-{
-	// Create a storyboard
-	CComPtr<IUIAnimationStoryboard> storyboard;
-	ASSERT_SUCCEEDED(mAnimMgr->CreateStoryboard(&storyboard));
-
-	// Create a transition
-	CComPtr<IUIAnimationTransition> transition;
-	//ATLTRACE("Animating to %.0f\n", mNextAnimationValue);
-	ASSERT_SUCCEEDED(mTransLib->CreateSmoothStopTransition(0.5,
-				mNextAnimationValue, &transition));
-	mNextAnimationValue = (mNextAnimationValue == LARGE ? SMALL : LARGE);
-
-	// Add the transition
-	ASSERT_SUCCEEDED(storyboard->AddTransition(mVar1, transition));
-
-	// Schedule the storyboard to animate now
-	UI_ANIMATION_SECONDS timeNow;
-	ASSERT_SUCCEEDED(mAnimTimer->GetTime(&timeNow));
-	ASSERT_SUCCEEDED(storyboard->Schedule(timeNow));
+	mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
 }
 
 void CAnimatedAlphaWindow::Initialize()
@@ -66,6 +48,36 @@ void CAnimatedAlphaWindow::Initialize()
 	mGdiDrawer->Initialize(m_hWnd);
 }
 
+void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
+{
+	// Create a storyboard
+	CComPtr<IUIAnimationStoryboard> storyboard;
+	ASSERT_SUCCEEDED(mAnimMgr->CreateStoryboard(&storyboard));
+
+	// Create a transition
+	CComPtr<IUIAnimationTransition> transition;
+	//ATLTRACE("Animating to %.0f\n", mNextAnimationValue);
+	ASSERT_SUCCEEDED(mTransLib->CreateSmoothStopTransition(0.5,
+		mNextAnimationValue, &transition));
+	mNextAnimationValue = (mNextAnimationValue == LARGE ? SMALL : LARGE);
+
+	// Add the transition
+	ASSERT_SUCCEEDED(storyboard->AddTransition(mVar1, transition));
+
+	// Schedule the storyboard to animate now
+	UI_ANIMATION_SECONDS timeNow;
+	ASSERT_SUCCEEDED(mAnimTimer->GetTime(&timeNow));
+	ASSERT_SUCCEEDED(storyboard->Schedule(timeNow));
+}
+
+void CAnimatedAlphaWindow::OnRButtonUp( UINT nFlags, CPoint point )
+{
+	if (mCurrentDrawer == mD2DWICDrawer.get())
+		mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
+	else
+		mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
+	Update();
+}
 void CAnimatedAlphaWindow::UpdateSize()
 {
 	mGdiDrawer->Initialize(m_hWnd);
@@ -76,20 +88,7 @@ void CAnimatedAlphaWindow::UpdateSize()
 	mD2DWICDrawer->UpdateSize(r);
 }
 
-CAnimatedAlphaWindow::CAnimatedAlphaWindow()
-	: mNextAnimationValue(SMALL)
-	, mGdiDrawer( new GdiplusDrawer() )
-	, mD2DWICDrawer( new CD2DWICDrawer() )
-	, mCurrentDrawer( NULL )
+void CAnimatedAlphaWindow::Update( )
 {
-	mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
-}
-
-void CAnimatedAlphaWindow::OnRButtonUp( UINT nFlags, CPoint point )
-{
-	if (mCurrentDrawer == mD2DWICDrawer.get())
-		mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
-	else
-		mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
-	Update();
+	mCurrentDrawer->Update(mVar1);
 }
