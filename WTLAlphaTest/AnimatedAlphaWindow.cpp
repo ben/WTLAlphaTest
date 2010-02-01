@@ -94,4 +94,5 @@ void CAnimatedAlphaWindow::OnRButtonUp( UINT nFlags, CPoint point )
 		mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
 	else
 		mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
+	Update();
 }
