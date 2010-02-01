@@ -41,39 +41,10 @@ void CD2DWICDrawer::UpdateSize( WTL::CRect rect_I )
 		GUID_WICPixelFormat32bppPBGRA, WICBitmapCacheOnLoad, &mWICbmp);
 }
 
-void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
-{
-	CreateDeviceResources();
-	mD2DRenderTarget->BeginDraw();
-
-	// Do some drawing here
-	mD2DRenderTarget->DrawEllipse(
-		D2D1::Ellipse(
-			D2D1::Point2F(500,500), 400,200),
-		mBrush, 50);
-
-	// Update the display
-	{
-		RenderTargetDC dc(mInteropTarget);
-		UINT w,h;
-		mWICbmp->GetSize(&w, &h);
-		SIZE s = {  w,h };
-		POINT p = {0};
-		POINT loc = {mLocation.x, mLocation.y};
-		BLENDFUNCTION bf = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
-		BOOL b = ::UpdateLayeredWindow(mHwnd, NULL, &loc, &s, dc, &p, RGB(0,255,255), &bf, ULW_ALPHA);
-		ATLTRACE("ULW returns %d, err=%x\n", b, GetLastError());
-	}
-
-	const HRESULT hr = mD2DRenderTarget->EndDraw();
-
-	if (D2DERR_RECREATE_TARGET == hr) {
-		DiscardDeviceResources();
-	}
-}
-
 void CD2DWICDrawer::CreateDeviceResources()
 {
+	if (mD2DRenderTarget) return;
+
 	// D2D render target for bitmap
 	const D2D1_PIXEL_FORMAT format = 
 		D2D1::PixelFormat(
@@ -102,3 +73,48 @@ void CD2DWICDrawer::DiscardDeviceResources()
 	mInteropTarget.Release();
 	mBrush.Release();
 }
+
+void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
+{
+	CreateDeviceResources();
+	mD2DRenderTarget->BeginDraw();
+
+	// Calculate ellipse dimensions
+	FLOAT cx,cy,rx,ry;
+	UINT w,h;
+	mWICbmp->GetSize(&w, &h);
+	cx = (FLOAT)w / 2;
+	cy = (FLOAT)h / 2;
+	rx = cx - 100;
+	ry = cy - 100;
+
+	// Get value of animated variable
+	double animVar;
+	var_I->GetValue(&animVar);
+
+	// Do some drawing here
+	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, 0.1f));
+	mD2DRenderTarget->DrawEllipse(
+		D2D1::Ellipse(
+			D2D1::Point2F(cx,cy),
+			(FLOAT)animVar*20,ry),
+		mBrush, (FLOAT)animVar);
+
+	// Update the display
+	{
+		RenderTargetDC dc(mInteropTarget);
+		SIZE s = {  w,h };
+		POINT p = {0};
+		POINT loc = {mLocation.x, mLocation.y};
+		BLENDFUNCTION bf = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+		BOOL b = ::UpdateLayeredWindow(mHwnd, NULL, &loc, &s, dc, &p, RGB(0,255,255), &bf, ULW_ALPHA);
+		//ATLTRACE("ULW returns %d, err=%x\n", b, GetLastError());
+	}
+
+	const HRESULT hr = mD2DRenderTarget->EndDraw();
+
+	if (D2DERR_RECREATE_TARGET == hr) {
+		DiscardDeviceResources();
+	}
+}
+

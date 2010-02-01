@@ -47,7 +47,7 @@ void GdiplusDrawer::Update( IUIAnimationVariable *var_I )
 	SIZE s = { mBackbuffer->GetWidth(), mBackbuffer->GetHeight() };
 	BLENDFUNCTION bf = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
 	BOOL b = ::UpdateLayeredWindow(mHwnd, NULL, &loc, &s, memDC, &p, RGB(0,255,255), &bf, ULW_ALPHA);
-	ATLTRACE("ULW returns %d, err=%x\n", b, GetLastError());
+	//ATLTRACE("ULW returns %d, err=%x\n", b, GetLastError());
 
 	// Cleanup
 	memDC.SelectBitmap(hOldBmp);
