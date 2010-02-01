@@ -26,8 +26,21 @@ void GdiplusDrawer::Update( IUIAnimationVariable *var_I )
 		double width;
 		assert(SUCCEEDED(var_I->GetValue(&width)));
 
+		// Ellipse
 		Pen p(Color(128,255,0,0), (REAL)width);
 		g.DrawEllipse(&p, 100,100, mBackbuffer->GetWidth()-200, mBackbuffer->GetHeight()-200);
+
+		// Label
+		{
+			std::wstring text = L"GDI+";
+			StringFormat sf;
+			sf.SetAlignment(StringAlignmentCenter);
+			sf.SetLineAlignment(StringAlignmentCenter);
+			Font f(L"Verdana", 24);
+			SolidBrush br(Color(26, 255, 0, 0));
+			g.DrawString(text.c_str(), text.length(), &f, 
+				PointF(mBackbuffer->GetWidth()/2, mBackbuffer->GetHeight()/2), &br);
+		}
 	}
 
 	// Create a memory DC

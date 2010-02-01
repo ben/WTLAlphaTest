@@ -31,6 +31,20 @@ void CD2DWICDrawer::Initialize( HWND hwnd_I )
 	mHwnd = hwnd_I;
 	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mD2DFactory);
 	mWICFactory.CoCreateInstance(CLSID_WICImagingFactory);
+
+	CComPtr<IDWriteFactory> dwFactory;
+	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), 
+		reinterpret_cast<IUnknown**>(&dwFactory));
+	dwFactory->CreateTextFormat(L"Verdana", NULL, 
+		DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		24.f,
+		L"en-US",
+		&mDWTextFormat);
+	// H and V centering
+	mDWTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	mDWTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 }
 
 void CD2DWICDrawer::UpdateSize( WTL::CRect rect_I )
@@ -99,6 +113,13 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
 			D2D1::Point2F(cx,cy),
 			rx,ry),
 		mBrush, (FLOAT)animVar);
+
+	// Text label
+	{
+		std::wstring text = L"Direct2D / DirectWrite / WIC";
+		D2D1_RECT_F textRect = {mLocation.x, mLocation.y, mLocation.x+w, mLocation.y+h};
+		mD2DRenderTarget->DrawText(text.c_str(), text.length(), mDWTextFormat, textRect, mBrush);
+	}
 
 	// Update the display
 	{

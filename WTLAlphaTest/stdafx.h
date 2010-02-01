@@ -13,6 +13,7 @@
 
 #include <uianimation.h>
 #include <d2d1.h>
+#include <dwrite.h>
 #include <Wincodec.h>
 #include <gdiplus.h>
 
@@ -44,3 +45,5 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+
+#include <string>
