@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "WTLAlphaTest.h"
-#include "WTLAlphaWindow.h"
+#include "WTLFullDesktopLayeredWindow.h"
 #include "AnimatedAlphaWindow.h"
 
 WTL::CAppModule _Module;

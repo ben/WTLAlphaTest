@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GdiplusDrawer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -203,7 +207,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\WTLAlphaWindow.cpp"
+				RelativePath=".\WTLFullDesktopLayeredWindow.cpp"
 				>
 			</File>
 		</Filter>
@@ -218,6 +222,14 @@
 			</File>
 			<File
 				RelativePath=".\AnimationTimerEventHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GdiplusDrawer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IDrawer.h"
 				>
 			</File>
 			<File
@@ -237,7 +249,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\WTLAlphaWindow.h"
+				RelativePath=".\WTLFullDesktopLayeredWindow.h"
 				>
 			</File>
 		</Filter>

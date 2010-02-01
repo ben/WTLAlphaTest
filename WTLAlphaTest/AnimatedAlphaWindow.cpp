@@ -5,47 +5,8 @@ using namespace Gdiplus;
 
 void CAnimatedAlphaWindow::Update( )
 {
-	if (!mVar1) return;
-
-	{
-		Graphics g(mBackbuffer.get());
-		g.SetSmoothingMode(SmoothingModeHighQuality);
-		g.Clear(Color(10,0,0,0));
-
-		// Animated pen width
-		double width;
-		assert(SUCCEEDED(mVar1->GetValue(&width)));
-
-		Pen p(Color(128,255,0,0), (REAL)width);
-		g.DrawEllipse(&p, 100,100, 500,500);
-	}
-
-	// Create a memory DC
-	HDC screenDC = ::GetDC(NULL);
-	WTL::CDC memDC;
-	memDC.CreateCompatibleDC(screenDC);
-	::ReleaseDC(NULL, screenDC);
-
-	// Copy the input bitmap and select it into the DC
-	WTL::CBitmap localBmp;
-	mBackbuffer->GetHBITMAP(Color(0,0,0,0), &localBmp.m_hBitmap);
-	HBITMAP hOldBmp = memDC.SelectBitmap(localBmp);
-
-	// Update the display
-	POINT p = {0};
-	POINT loc = {mX, mY};
-	SIZE s = { mW, mH };
-	BLENDFUNCTION bf = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
-	BOOL b = ::UpdateLayeredWindow(m_hWnd, NULL, &loc, &s, memDC, &p, RGB(0,255,255), &bf, ULW_ALPHA);
-	//ATLTRACE("ULW returns %d, err=%x\n", b, GetLastError());
-
-	// Cleanup
-	memDC.SelectBitmap(hOldBmp);
-}
-
-int CAnimatedAlphaWindow::OnCreate( LPCREATESTRUCT lpCreateStruct )
-{
-	return 0;
+	mGdiDrawer->Initialize(m_hWnd);
+	mGdiDrawer->Update(mVar1);
 }
 
 void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
@@ -97,4 +58,12 @@ void CAnimatedAlphaWindow::Initialize()
 
 	// Create animation variable(s)
 	assert(SUCCEEDED(mAnimMgr->CreateAnimationVariable(50, &mVar1)));
+
+	// Drawing methods
+	mGdiDrawer->Initialize(m_hWnd);
+}
+
+void CAnimatedAlphaWindow::UpdateSize()
+{
+	mGdiDrawer->UpdateSize(CRect(mX, mY, mW, mH));
 }

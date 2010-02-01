@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "WTLAlphaWindow.h"
+#include "WTLFullDesktopLayeredWindow.h"
 
 using namespace Gdiplus;
 
@@ -15,7 +15,7 @@ using namespace Gdiplus;
 
 
 
-int CWTLAlphaWindow::OnCreate( LPCREATESTRUCT lpCreateStruct )
+int CWTLFullDesktopLayeredWindow::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
 	mW = mH = 0;
 	RefreshSize();
@@ -24,19 +24,19 @@ int CWTLAlphaWindow::OnCreate( LPCREATESTRUCT lpCreateStruct )
 
 
 
-void CWTLAlphaWindow::OnDestroy()
+void CWTLFullDesktopLayeredWindow::OnDestroy()
 {
 	PostQuitMessage(0);
 }
 
-void CWTLAlphaWindow::OnShowWindow( BOOL bShow, UINT nStatus )
+void CWTLFullDesktopLayeredWindow::OnShowWindow( BOOL bShow, UINT nStatus )
 {
 	RefreshSize();
 	Update();
 	this->SetMsgHandled(FALSE);
 }
 
-void CWTLAlphaWindow::RefreshSize()
+void CWTLFullDesktopLayeredWindow::RefreshSize()
 {
 	bool needNewBitmap = false;
 	UPDATE_FROM_SYSMETRIC(mX, SM_XVIRTUALSCREEN);
@@ -48,6 +48,6 @@ void CWTLAlphaWindow::RefreshSize()
 
 	if (needNewBitmap)
 	{
-		mBackbuffer.reset(new Bitmap(mW, mH));
+		UpdateSize();
 	}
 }

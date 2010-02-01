@@ -1,25 +1,29 @@
 #pragma once
-#include "wtlalphawindow.h"
+#include "WTLFullDesktopLayeredWindow.h"
 #include "AnimationTimerEventHandler.h"
+#include "GdiplusDrawer.h"
 
 class CAnimatedAlphaWindow :
-	public CWTLAlphaWindow
+	public CWTLFullDesktopLayeredWindow
 {
 public:
 	CAnimatedAlphaWindow()
-		: mNextAnimationValue(50.)
+		: mNextAnimationValue(5.)
+		, mGdiDrawer(new GdiplusDrawer())
 	{}
 
 	BEGIN_MSG_MAP(CAnimatedAlphaWindow)
-		MSG_WM_CREATE(OnCreate)
 		MSG_WM_LBUTTONUP(OnLButtonUp)
-		CHAIN_MSG_MAP(CWTLAlphaWindow)
+		CHAIN_MSG_MAP(CWTLFullDesktopLayeredWindow)
 	END_MSG_MAP()
 
 	void Initialize();
 
 protected:
+	typedef boost::shared_ptr<Gdiplus::Bitmap> BitmapPtr;
+
 	void Update();
+	void UpdateSize();
 
 private:
 	static void UpdateCallback(CAnimatedAlphaWindow *obj) { obj->Update(); }
@@ -35,4 +39,6 @@ private:
 
 	boost::shared_ptr<AnimTimerEventHandler> mEventHandler;
 	double mNextAnimationValue;
+
+	std::auto_ptr<GdiplusDrawer> mGdiDrawer;
 };
