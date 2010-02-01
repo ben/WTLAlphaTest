@@ -57,6 +57,7 @@ void CAnimatedAlphaWindow::Initialize()
 	evthandler->Initialize(boost::bind(UpdateCallback, this));
 	CComQIPtr<IUIAnimationTimerEventHandler> spTimerEventHandler(evthandler);
 	ASSERT_SUCCEEDED(mAnimTimer->SetTimerEventHandler(spTimerEventHandler));
+	ASSERT_SUCCEEDED(mAnimTimer->SetFrameRateThreshold(300));
 
 	// Create animation variable(s)
 	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(LARGE, &mVar1));

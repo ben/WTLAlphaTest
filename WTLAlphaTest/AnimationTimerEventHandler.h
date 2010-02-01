@@ -41,8 +41,9 @@ public:
 		return S_OK;
 	}
 
-	__checkReturn HRESULT __stdcall OnRenderingTooSlow(UINT32 /* fps */)
+	__checkReturn HRESULT __stdcall OnRenderingTooSlow(UINT32 fps)
 	{
+		ATLTRACE("Rendering too slow: %d fps\n", fps);
 		return S_OK;
 	}
 
