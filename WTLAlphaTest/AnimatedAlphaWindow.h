@@ -39,4 +39,5 @@ private:
 	double mNextAnimationValue;
 
 	std::auto_ptr<GdiplusDrawer> mGdiDrawer;
+	std::auto_ptr<CD2DWICDrawer> mD2DWICDrawer;
 };

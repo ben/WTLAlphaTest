@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdiplus.lib"
+				AdditionalDependencies="gdiplus.lib d2d1.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -135,7 +135,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdiplus.lib"
+				AdditionalDependencies="gdiplus.lib d2d1.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -176,6 +176,10 @@
 			>
 			<File
 				RelativePath=".\AnimatedAlphaWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\D2DWICDrawer.cpp"
 				>
 			</File>
 			<File
@@ -222,6 +226,10 @@
 			</File>
 			<File
 				RelativePath=".\AnimationTimerEventHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\D2DWICDrawer.h"
 				>
 			</File>
 			<File

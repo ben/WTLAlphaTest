@@ -9,8 +9,11 @@
 
 void CAnimatedAlphaWindow::Update( )
 {
-	mGdiDrawer->Initialize(m_hWnd);
+#if 0
 	mGdiDrawer->Update(mVar1);
+#else
+	mD2DWICDrawer->Update(mVar1);
+#endif
 }
 
 void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
@@ -69,7 +72,12 @@ void CAnimatedAlphaWindow::Initialize()
 
 void CAnimatedAlphaWindow::UpdateSize()
 {
-	mGdiDrawer->UpdateSize(CRect(mX, mY, mW, mH));
+	mGdiDrawer->Initialize(m_hWnd);
+	mD2DWICDrawer->Initialize(m_hWnd);
+
+	CRect r(mX, mY, mW, mH);
+	mGdiDrawer->UpdateSize(r);
+	mD2DWICDrawer->UpdateSize(r);
 }
 
 CAnimatedAlphaWindow::CAnimatedAlphaWindow()

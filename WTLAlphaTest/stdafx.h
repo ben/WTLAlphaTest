@@ -12,7 +12,8 @@
 #include <atltypes.h>
 
 #include <uianimation.h>
-
+#include <d2d1.h>
+#include <Wincodec.h>
 #include <gdiplus.h>
 
 #include <algorithm>

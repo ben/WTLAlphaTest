@@ -20,14 +20,14 @@ void GdiplusDrawer::Update( IUIAnimationVariable *var_I )
 	{
 		Graphics g(mBackbuffer.get());
 		g.SetSmoothingMode(SmoothingModeHighQuality);
-		g.Clear(Color(10,0,0,0));
+		g.Clear(Color(26,0,0,0));
 
 		// Animated pen width
 		double width;
 		assert(SUCCEEDED(var_I->GetValue(&width)));
 
 		Pen p(Color(128,255,0,0), (REAL)width);
-		g.DrawEllipse(&p, 100,100, 500,500);
+		g.DrawEllipse(&p, 100,100, mBackbuffer->GetWidth()-200, mBackbuffer->GetHeight()-200);
 	}
 
 	// Create a memory DC
