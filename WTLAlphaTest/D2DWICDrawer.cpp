@@ -117,7 +117,11 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
 	// Text label
 	{
 		std::wstring text = L"Direct2D / DirectWrite / WIC";
-		D2D1_RECT_F textRect = {mLocation.x, mLocation.y, mLocation.x+w, mLocation.y+h};
+		D2D1_RECT_F textRect = {
+			(FLOAT)mLocation.x, 
+			(FLOAT)mLocation.y,
+			(FLOAT)mLocation.x+w,
+			(FLOAT)mLocation.y+h};
 		mD2DRenderTarget->DrawText(text.c_str(), text.length(), mDWTextFormat, textRect, mBrush);
 	}
 
