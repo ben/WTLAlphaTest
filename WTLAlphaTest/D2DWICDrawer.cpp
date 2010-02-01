@@ -107,7 +107,7 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
 	mD2DRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Red, alpha), &brush);
 
-	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, alpha));
+	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, alpha/2));
 	mD2DRenderTarget->DrawEllipse(
 		D2D1::Ellipse(
 			D2D1::Point2F(cx,cy),
