@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "AnimatedAlphaWindow.h"
 
+#define SMALL 20
+#define LARGE 100
+ 
 #define ASSERT_SUCCEEDED(expr)						\
 	do {														\
 		HRESULT __hr__ = (expr);						\
@@ -9,11 +12,7 @@
 
 void CAnimatedAlphaWindow::Update( )
 {
-#if 0
-	mGdiDrawer->Update(mVar1);
-#else
-	mD2DWICDrawer->Update(mVar1);
-#endif
+	mCurrentDrawer->Update(mVar1);
 }
 
 void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
@@ -31,7 +30,7 @@ void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
 							  0.5,
 							  mNextAnimationValue,
 							  0.2, 0.8, &transition));
-	mNextAnimationValue = (mNextAnimationValue == 50. ? 20. : 50.);
+	mNextAnimationValue = (mNextAnimationValue == LARGE ? SMALL : LARGE);
 
 	// Add the transition
 	ASSERT_SUCCEEDED(storyboard->AddTransition(mVar1, transition));
@@ -64,7 +63,7 @@ void CAnimatedAlphaWindow::Initialize()
 	ASSERT_SUCCEEDED(mAnimTimer->SetTimerEventHandler(spTimerEventHandler));
 
 	// Create animation variable(s)
-	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(50, &mVar1));
+	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(LARGE, &mVar1));
 
 	// Drawing methods
 	mGdiDrawer->Initialize(m_hWnd);
@@ -81,9 +80,18 @@ void CAnimatedAlphaWindow::UpdateSize()
 }
 
 CAnimatedAlphaWindow::CAnimatedAlphaWindow()
-	: mNextAnimationValue(5.)
+	: mNextAnimationValue(SMALL)
 	, mGdiDrawer( new GdiplusDrawer() )
 	, mD2DWICDrawer( new CD2DWICDrawer() )
+	, mCurrentDrawer( NULL )
 {
+	mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
+}
 
+void CAnimatedAlphaWindow::OnRButtonUp( UINT nFlags, CPoint point )
+{
+	if (mCurrentDrawer == mD2DWICDrawer.get())
+		mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
+	else
+		mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
 }

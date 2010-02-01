@@ -12,6 +12,7 @@ public:
 
 	BEGIN_MSG_MAP(CAnimatedAlphaWindow)
 		MSG_WM_LBUTTONUP(OnLButtonUp)
+		MSG_WM_RBUTTONUP(OnRButtonUp)
 		CHAIN_MSG_MAP(CWTLFullDesktopLayeredWindow)
 	END_MSG_MAP()
 
@@ -28,6 +29,7 @@ private:
 
 	int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	void OnLButtonUp(UINT nFlags, CPoint point);
+	void OnRButtonUp(UINT nFlags, CPoint point);
 
 	CComPtr<IUIAnimationManager>						mAnimMgr;
 	CComPtr<IUIAnimationTimer>							mAnimTimer;
@@ -38,6 +40,7 @@ private:
 	boost::shared_ptr<AnimTimerEventHandler> mEventHandler;
 	double mNextAnimationValue;
 
+	IDrawer *mCurrentDrawer;
 	std::auto_ptr<GdiplusDrawer> mGdiDrawer;
 	std::auto_ptr<CD2DWICDrawer> mD2DWICDrawer;
 };

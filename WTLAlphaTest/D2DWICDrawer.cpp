@@ -97,7 +97,7 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
 	mD2DRenderTarget->DrawEllipse(
 		D2D1::Ellipse(
 			D2D1::Point2F(cx,cy),
-			(FLOAT)animVar*20,ry),
+			rx,ry),
 		mBrush, (FLOAT)animVar);
 
 	// Update the display
