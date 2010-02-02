@@ -54,7 +54,7 @@ void GdiplusDrawer::Update( IUIAnimationVariable *var_I, const IDrawer::VarVecto
 			Font f(L"Verdana", 24);
 			SolidBrush br(Color(alpha, 255, 0, 0));
 			g.DrawString(text.c_str(), text.length(), &f, 
-				PointF((REAL)mBackbuffer->GetWidth()/2, (REAL)mBackbuffer->GetHeight()/2),
+				PointF((REAL)mBackbuffer->GetWidth()/2, (REAL)40),
 				&br);
 		}
 	}

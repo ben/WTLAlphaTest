@@ -127,7 +127,7 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I, const IDrawer::VarVecto
 			(FLOAT)mLocation.x, 
 			(FLOAT)mLocation.y,
 			(FLOAT)mLocation.x+w,
-			(FLOAT)mLocation.y+h};
+			(FLOAT)mLocation.y+80};
 		mD2DRenderTarget->DrawText(text.c_str(), text.length(), mDWTextFormat, textRect, brush);
 	}
 
