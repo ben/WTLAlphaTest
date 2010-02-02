@@ -10,6 +10,7 @@
 		assert(SUCCEEDED(__hr__));						\
 	} while (0)
 
+
 CAnimatedAlphaWindow::CAnimatedAlphaWindow()
 : mNextAlphaValue(SMALL)
 , mGdiDrawer( new GdiplusDrawer() )
@@ -96,13 +97,19 @@ void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
 
 void CAnimatedAlphaWindow::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
-	if (nChar != ' ') return;
+	if (nChar == 'A')
+	{
+		SwapSize();
+	}
 
-	if (mCurrentDrawer == mD2DWICDrawer.get())
-		mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
-	else
-		mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
-	Update();
+	if (nChar == ' ')
+	{
+		if (mCurrentDrawer == mD2DWICDrawer.get())
+			mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
+		else
+			mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
+		Update();
+	}
 }
 
 void CAnimatedAlphaWindow::UpdateSize()
@@ -120,4 +127,27 @@ void CAnimatedAlphaWindow::Update( )
 	mCurrentDrawer->Update(mAlphaVar, mPosVars);
 }
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+void CAnimatedAlphaWindow::SwapSize()
+{
+	// Switch size from main monitor to entire virtual desktop
+	int mainScreenW = GetSystemMetrics(SM_CXSCREEN);
+	if (mW == mainScreenW)
+	{
+		mX = GetSystemMetrics(SM_XVIRTUALSCREEN);
+		mY = GetSystemMetrics(SM_YVIRTUALSCREEN);
+		mW = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+		mH = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+	}
+	else
+	{
+		mX = mY = 0;
+		mW = GetSystemMetrics(SM_CXSCREEN);
+		mH = GetSystemMetrics(SM_CYSCREEN);
+	}
+	ATLTRACE("Size: %d,%d - %d,%d\n", mX, mY, mW, mH);
+	UpdateSize();
+}
 

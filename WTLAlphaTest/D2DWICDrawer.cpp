@@ -29,9 +29,13 @@ public:
 void CD2DWICDrawer::Initialize( HWND hwnd_I )
 {
 	mHwnd = hwnd_I;
+	mD2DFactory.Release();
 	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mD2DFactory);
+
+	mWICFactory.Release();
 	mWICFactory.CoCreateInstance(CLSID_WICImagingFactory);
 
+	mDWTextFormat.Release();
 	CComPtr<IDWriteFactory> dwFactory;
 	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), 
 		reinterpret_cast<IUnknown**>(&dwFactory));
@@ -51,6 +55,7 @@ void CD2DWICDrawer::UpdateSize( WTL::CRect rect_I )
 {
 	mLocation = rect_I.TopLeft();
 
+	mWICbmp.Release();
 	mWICFactory->CreateBitmap(rect_I.Width(), rect_I.Height(),
 		GUID_WICPixelFormat32bppPBGRA, WICBitmapCacheOnLoad, &mWICbmp);
 }

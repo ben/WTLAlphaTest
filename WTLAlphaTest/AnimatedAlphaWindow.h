@@ -31,6 +31,10 @@ private:
 	void OnLButtonUp(UINT nFlags, CPoint point);
 	void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	void SwapSize();
 	CComPtr<IUIAnimationManager>						mAnimMgr;
 	CComPtr<IUIAnimationTimer>							mAnimTimer;
 	CComPtr<IUIAnimationTransitionLibrary>			mTransLib;
