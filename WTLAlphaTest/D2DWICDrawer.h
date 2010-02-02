@@ -5,7 +5,7 @@ class CD2DWICDrawer : public IDrawer
 {
 public:
 	void Initialize(HWND hwnd_I);
-	void Update(IUIAnimationVariable *var_I);
+	void Update(IUIAnimationVariable *var_I, const IDrawer::VarVector &posVars_I);
 	void UpdateSize(WTL::CRect rect_I);
 	
 private:

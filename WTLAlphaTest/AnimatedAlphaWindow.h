@@ -35,10 +35,11 @@ private:
 	CComPtr<IUIAnimationTimer>							mAnimTimer;
 	CComPtr<IUIAnimationTransitionLibrary>			mTransLib;
 
-	CComPtr<IUIAnimationVariable> mVar1;
+	CComPtr<IUIAnimationVariable> mAlphaVar;
+	IDrawer::VarVector mPosVars;
 
 	boost::shared_ptr<AnimTimerEventHandler> mEventHandler;
-	double mNextAnimationValue;
+	double mNextAlphaValue;
 
 	IDrawer *mCurrentDrawer;
 	std::auto_ptr<GdiplusDrawer> mGdiDrawer;

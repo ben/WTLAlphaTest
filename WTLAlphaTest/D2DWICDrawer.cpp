@@ -83,36 +83,42 @@ void CD2DWICDrawer::DiscardDeviceResources()
 	mInteropTarget.Release();
 }
 
-void CD2DWICDrawer::Update( IUIAnimationVariable *var_I )
+void CD2DWICDrawer::Update( IUIAnimationVariable *var_I, const IDrawer::VarVector &posVars_I )
 {
 	CreateDeviceResources();
 	mD2DRenderTarget->BeginDraw();
 
 	// Calculate ellipse dimensions
-	FLOAT cx,cy,rx,ry;
 	UINT w,h;
 	mWICbmp->GetSize(&w, &h);
-	cx = (FLOAT)w / 2;
-	cy = (FLOAT)h / 2;
-	rx = cx - 100;
-	ry = cy - 100;
 
 	// Get value of animated variable
-	double animVar;
-	var_I->GetValue(&animVar);
-	FLOAT alpha = (FLOAT)(animVar / 100.);
+	double alphaD;
+	var_I->GetValue(&alphaD);
+	FLOAT alpha = (FLOAT)(alphaD / 100.);
 
 	// Do some drawing here
 	CComPtr<ID2D1SolidColorBrush> brush;
 	mD2DRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Red, alpha), &brush);
-
 	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, alpha/2));
-	mD2DRenderTarget->DrawEllipse(
-		D2D1::Ellipse(
-			D2D1::Point2F(cx,cy),
-			rx,ry),
-		brush, (FLOAT)animVar);
+	//mD2DRenderTarget->DrawEllipse(
+	//	D2D1::Ellipse(
+	//		D2D1::Point2F(cx,y),
+	//		rx,ry),
+	//	brush, (FLOAT)alphaD);
+	FLOAT interval = (FLOAT)w / posVars_I.size();
+	for (size_t i=0; i<posVars_I.size(); ++i)
+	{
+		DOUBLE y;
+		posVars_I[i]->GetValue(&y);
+		D2D1_ROUNDED_RECT r =
+		{
+			{ (FLOAT)i*10, (FLOAT)y, (FLOAT)(interval*(i+1) - interval/2)+100, (FLOAT)y+100 },
+			10,10
+		};
+		mD2DRenderTarget->DrawRoundedRectangle(r, brush, (FLOAT)alphaD/2);
+	}
 
 	// Text label
 	{

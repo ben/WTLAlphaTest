@@ -11,12 +11,13 @@
 	} while (0)
 
 CAnimatedAlphaWindow::CAnimatedAlphaWindow()
-: mNextAnimationValue(SMALL)
+: mNextAlphaValue(SMALL)
 , mGdiDrawer( new GdiplusDrawer() )
 , mD2DWICDrawer( new CD2DWICDrawer() )
 , mCurrentDrawer( NULL )
 {
-	mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
+	//mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
+	mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
 }
 
 void CAnimatedAlphaWindow::Initialize()
@@ -42,10 +43,33 @@ void CAnimatedAlphaWindow::Initialize()
 	ASSERT_SUCCEEDED(mAnimTimer->SetFrameRateThreshold(300));
 
 	// Create animation variable(s)
-	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(LARGE, &mVar1));
+	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(LARGE, &mAlphaVar));
+	for (int i=0; i<4; ++i)
+	{
+		CComPtr<IUIAnimationVariable> var;
+		ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(50, &var));
+		mPosVars.push_back(var);
+	}
 
-	// Drawing methods
-	mGdiDrawer->Initialize(m_hWnd);
+	// Start the sinusoidals
+	CComPtr<IUIAnimationStoryboard> storyboard;
+	ASSERT_SUCCEEDED(mAnimMgr->CreateStoryboard(&storyboard));
+	BOOST_FOREACH(CComPtr<IUIAnimationVariable> var, mPosVars)
+	{
+		CComPtr<IUIAnimationTransition> linear;
+		CComPtr<IUIAnimationTransition> sinusoidal;
+		UI_ANIMATION_SECONDS duration = ((DOUBLE)(rand()%100))/50;
+		DOUBLE finalpos = (rand()%100)+300;
+		DOUBLE period = ((DOUBLE)(rand()%100))/50;
+		ASSERT_SUCCEEDED(mTransLib->CreateLinearTransition(duration, finalpos, &linear));
+		ASSERT_SUCCEEDED(storyboard->AddTransition(var, linear));
+		ASSERT_SUCCEEDED(mTransLib->CreateSinusoidalTransitionFromVelocity(200,
+			period, &sinusoidal));
+		ASSERT_SUCCEEDED(storyboard->AddTransition(var, sinusoidal));
+	}
+	UI_ANIMATION_SECONDS timeNow;
+	ASSERT_SUCCEEDED(mAnimTimer->GetTime(&timeNow));
+	ASSERT_SUCCEEDED(storyboard->Schedule(timeNow));
 }
 
 void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
@@ -54,15 +78,15 @@ void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
 	CComPtr<IUIAnimationStoryboard> storyboard;
 	ASSERT_SUCCEEDED(mAnimMgr->CreateStoryboard(&storyboard));
 
-	// Create a transition
-	CComPtr<IUIAnimationTransition> transition;
-	//ATLTRACE("Animating to %.0f\n", mNextAnimationValue);
+	// Create transitions
+	CComPtr<IUIAnimationTransition> stopTransition;
+	//ATLTRACE("Animating to %.0f\n", mNextAlphaValue);
 	ASSERT_SUCCEEDED(mTransLib->CreateSmoothStopTransition(0.5,
-		mNextAnimationValue, &transition));
-	mNextAnimationValue = (mNextAnimationValue == LARGE ? SMALL : LARGE);
+		mNextAlphaValue, &stopTransition));
+	mNextAlphaValue = (mNextAlphaValue == LARGE ? SMALL : LARGE);
 
-	// Add the transition
-	ASSERT_SUCCEEDED(storyboard->AddTransition(mVar1, transition));
+	// Add the stopTransition
+	ASSERT_SUCCEEDED(storyboard->AddTransition(mAlphaVar, stopTransition));
 
 	// Schedule the storyboard to animate now
 	UI_ANIMATION_SECONDS timeNow;
@@ -93,7 +117,7 @@ void CAnimatedAlphaWindow::UpdateSize()
 
 void CAnimatedAlphaWindow::Update( )
 {
-	mCurrentDrawer->Update(mVar1);
+	mCurrentDrawer->Update(mAlphaVar, mPosVars);
 }
 
 

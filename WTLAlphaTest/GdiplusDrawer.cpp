@@ -15,7 +15,7 @@ void GdiplusDrawer::UpdateSize( WTL::CRect rect_I )
 	mBackbuffer.reset(new Bitmap(rect_I.Width(), rect_I.Height()));
 }
 
-void GdiplusDrawer::Update( IUIAnimationVariable *var_I )
+void GdiplusDrawer::Update( IUIAnimationVariable *var_I, const IDrawer::VarVector &posVars_I )
 {
 	// Animated pen animVar
 	double animVar;
@@ -31,8 +31,19 @@ void GdiplusDrawer::Update( IUIAnimationVariable *var_I )
 		g.Clear(Color(alpha/2,0,0,0));
 
 		// Ellipse
-		Pen p(Color(alpha,255,0,0), (REAL)animVar);
-		g.DrawEllipse(&p, 100,100, mBackbuffer->GetWidth()-200, mBackbuffer->GetHeight()-200);
+		Pen p(Color(alpha,255,0,0), (REAL)animVar/2);
+		//g.DrawEllipse(&p, 100,100, mBackbuffer->GetWidth()-200, mBackbuffer->GetHeight()-200);
+		double interval = mBackbuffer->GetWidth() / posVars_I.size();
+		double x;
+		size_t i;
+		for (x = interval/2, i=0;
+			  i<posVars_I.size();
+			  ++i, x += interval)
+		{
+			double y;
+			HRESULT hr = posVars_I[i]->GetValue(&y);
+			g.DrawEllipse(&p, (REAL)x, (REAL)y, 100.,100.);
+		}
 
 		// Label
 		{
