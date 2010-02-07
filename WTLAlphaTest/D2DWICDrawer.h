@@ -1,11 +1,12 @@
 #pragma once
 #include "idrawer.h"
+#include "WedgeDrawer.h"
 
 class CD2DWICDrawer : public IDrawer
 {
 public:
 	void Initialize(HWND hwnd_I);
-	void Update(IUIAnimationVariable *var_I, const IDrawer::VarVector &posVars_I);
+	void Update(double alpha_I, double sweep_I);
 	void UpdateSize(WTL::CRect rect_I);
 	
 private:
@@ -26,4 +27,7 @@ private:
 
 	// DirectWrite
 	CComPtr<IDWriteTextFormat> mDWTextFormat;
+
+	// Custom classes
+	CWedgeDrawer mWedge;
 };

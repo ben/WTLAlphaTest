@@ -48,32 +48,7 @@ void CAnimatedAlphaWindow::Initialize()
 
 	// Create animation variable(s)
 	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(LARGE, &mAlphaVar));
-	for (int i=0; i<4; ++i)
-	{
-		CComPtr<IUIAnimationVariable> var;
-		ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(50, &var));
-		mPosVars.push_back(var);
-	}
-
-	// Start the sinusoidals
-	CComPtr<IUIAnimationStoryboard> storyboard;
-	ASSERT_SUCCEEDED(mAnimMgr->CreateStoryboard(&storyboard));
-	BOOST_FOREACH(CComPtr<IUIAnimationVariable> var, mPosVars)
-	{
-		CComPtr<IUIAnimationTransition> linear;
-		CComPtr<IUIAnimationTransition> sinusoidal;
-		UI_ANIMATION_SECONDS duration = ((DOUBLE)(rand()%100))/50;
-		DOUBLE finalpos = (rand()%100)+300;
-		DOUBLE period = ((DOUBLE)(rand()%100))/50;
-		ASSERT_SUCCEEDED(mTransLib->CreateLinearTransition(duration, finalpos, &linear));
-		ASSERT_SUCCEEDED(storyboard->AddTransition(var, linear));
-		ASSERT_SUCCEEDED(mTransLib->CreateSinusoidalTransitionFromVelocity(200,
-			period, &sinusoidal));
-		ASSERT_SUCCEEDED(storyboard->AddTransition(var, sinusoidal));
-	}
-	UI_ANIMATION_SECONDS timeNow;
-	ASSERT_SUCCEEDED(mAnimTimer->GetTime(&timeNow));
-	ASSERT_SUCCEEDED(storyboard->Schedule(timeNow));
+	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(45., &mSweepVar));
 }
 
 void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
@@ -113,6 +88,13 @@ void CAnimatedAlphaWindow::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 			mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
 		Update();
 	}
+
+	if (nChar == 'J' || nChar == 'K')
+	{
+		double oldSweep;
+		mSweepVar->GetValue(&oldSweep);
+		AnimateSweepTo(nChar == 'K' ? oldSweep + 5. : oldSweep - 5.);
+	}
 }
 
 void CAnimatedAlphaWindow::UpdateSize()
@@ -127,7 +109,10 @@ void CAnimatedAlphaWindow::UpdateSize()
 
 void CAnimatedAlphaWindow::Update( )
 {
-	mCurrentDrawer->Update(mAlphaVar, mPosVars);
+	double alpha, sweep;
+	mAlphaVar->GetValue(&alpha);
+	mSweepVar->GetValue(&sweep);
+	mCurrentDrawer->Update(alpha, sweep);
 }
 
 
@@ -154,3 +139,22 @@ void CAnimatedAlphaWindow::SwapSize()
 	UpdateSize();
 }
 
+void CAnimatedAlphaWindow::AnimateSweepTo( double newSweep_I )
+{
+	// Create a storyboard
+	CComPtr<IUIAnimationStoryboard> storyboard;
+	ASSERT_SUCCEEDED(mAnimMgr->CreateStoryboard(&storyboard));
+
+	// Create transitions
+	CComPtr<IUIAnimationTransition> stopTransition;
+	ASSERT_SUCCEEDED(mTransLib->CreateSmoothStopTransition(0.25,
+		newSweep_I, &stopTransition));
+
+	// Add the stopTransition
+	ASSERT_SUCCEEDED(storyboard->AddTransition(mSweepVar, stopTransition));
+
+	// Schedule the storyboard to animate now
+	UI_ANIMATION_SECONDS timeNow;
+	ASSERT_SUCCEEDED(mAnimTimer->GetTime(&timeNow));
+	ASSERT_SUCCEEDED(storyboard->Schedule(timeNow));
+}

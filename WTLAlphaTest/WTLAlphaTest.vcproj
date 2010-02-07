@@ -253,6 +253,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\WedgeDrawer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\WTLAlphaTest.h"
 				>
 			</File>

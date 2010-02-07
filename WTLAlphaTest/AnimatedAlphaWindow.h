@@ -30,17 +30,15 @@ private:
 	int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	void OnLButtonUp(UINT nFlags, CPoint point);
 	void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
-
-
-
-	////////////////////////////////////////////////////////////////////////////////
 	void SwapSize();
+	void AnimateSweepTo(double newSweep_I);
+
 	CComPtr<IUIAnimationManager>						mAnimMgr;
 	CComPtr<IUIAnimationTimer>							mAnimTimer;
 	CComPtr<IUIAnimationTransitionLibrary>			mTransLib;
 
 	CComPtr<IUIAnimationVariable> mAlphaVar;
-	IDrawer::VarVector mPosVars;
+	CComPtr<IUIAnimationVariable> mSweepVar;
 
 	boost::shared_ptr<AnimTimerEventHandler> mEventHandler;
 	double mNextAlphaValue;
