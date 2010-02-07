@@ -107,11 +107,13 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I, const IDrawer::VarVecto
 	mD2DRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Red, alpha), &brush);
 	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, alpha/2));
-	//mD2DRenderTarget->DrawEllipse(
-	//	D2D1::Ellipse(
-	//		D2D1::Point2F(cx,y),
-	//		rx,ry),
-	//	brush, (FLOAT)alphaD);
+#if 1
+	mD2DRenderTarget->DrawEllipse(
+		D2D1::Ellipse(
+			D2D1::Point2F(w/2,h/2),
+			w/2, h/2),
+		brush, (FLOAT)alphaD);
+#else
 	FLOAT interval = (FLOAT)w / posVars_I.size();
 	for (size_t i=0; i<posVars_I.size(); ++i)
 	{
@@ -124,6 +126,7 @@ void CD2DWICDrawer::Update( IUIAnimationVariable *var_I, const IDrawer::VarVecto
 		};
 		mD2DRenderTarget->DrawRoundedRectangle(r, brush, (FLOAT)alphaD/2);
 	}
+#endif
 
 	// Text label
 	{

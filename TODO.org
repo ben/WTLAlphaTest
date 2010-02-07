@@ -1,0 +1,13 @@
+* RM Drawing
+  - Draw *a* wedge
+  - Bezier/arc for circular part, line for shooting part
+    - GeometryObj CreateAreaGeometry(centerRadius, angle1, angle2) (region)
+    - GeometryObj CreateLineGeometry(centerRadius, angle1, angle2) (path)
+    - Given an angular sweep, inset lines from edge by a bit
+  - Clip text drawing to arbitrary region?
+  - Cache geometry until sweep changes
+    - Is geometry a device-dependent resource?
+  - Brushes are a device-dependent resource
+    - Black radial gradient brush (area)
+    - White radial gradient brush (lines)
+    - Plain white brush (text)

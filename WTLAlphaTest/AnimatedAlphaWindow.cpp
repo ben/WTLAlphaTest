@@ -17,8 +17,11 @@ CAnimatedAlphaWindow::CAnimatedAlphaWindow()
 , mD2DWICDrawer( new CD2DWICDrawer() )
 , mCurrentDrawer( NULL )
 {
-	//mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
+#if 1
+	mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
+#else
 	mCurrentDrawer = (IDrawer *)mGdiDrawer.get();
+#endif
 }
 
 void CAnimatedAlphaWindow::Initialize()
