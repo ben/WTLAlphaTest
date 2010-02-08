@@ -72,7 +72,7 @@ CComPtr<ID2D1RadialGradientBrush> CWedgeDrawer::BrushFromStops( CComPtr<ID2D1Ren
 		D2D1::RadialGradientBrushProperties(
 			D2D1::Point2F(0, 0),
 			D2D1::Point2F(0, 0),
-			mAlphaRadius, mAlphaRadius),
+			(FLOAT)mAlphaRadius, (FLOAT)mAlphaRadius),
 		D2D1::BrushProperties(),
 		gradientStops,
 		&brush

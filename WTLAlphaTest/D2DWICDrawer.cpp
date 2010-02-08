@@ -127,6 +127,7 @@ void CD2DWICDrawer::Update( double alpha_I, double sweep_I )
 	D2D1_ELLIPSE center = D2D1::Ellipse(D2D1::Point2F(), 45., 45.);
 	mD2DRenderTarget->FillEllipse(center, areaBrush);
 	mD2DRenderTarget->DrawEllipse(center, lineBrush, 1.5);
+	mD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
 	// Text label
 	{
