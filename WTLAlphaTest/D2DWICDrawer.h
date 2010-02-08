@@ -7,6 +7,8 @@ class CD2DWICDrawer : public IDrawer
 public:
 	void Initialize(HWND hwnd_I);
 	void Update(double alpha_I, double sweep_I);
+
+	void DrawWedgeAtAngle( double sweep_I, CComPtr<ID2D1PathGeometry> path, CComPtr<ID2D1RadialGradientBrush> areaBrush, CComPtr<ID2D1RadialGradientBrush> lineBrush );
 	void UpdateSize(WTL::CRect rect_I);
 	
 private:

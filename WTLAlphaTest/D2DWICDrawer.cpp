@@ -31,6 +31,7 @@ void CD2DWICDrawer::Initialize( HWND hwnd_I )
 	mHwnd = hwnd_I;
 	mD2DFactory.Release();
 	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mD2DFactory);
+	mWedge.SetFactory(mD2DFactory);
 
 	mWICFactory.Release();
 	mWICFactory.CoCreateInstance(CLSID_WICImagingFactory);
@@ -100,45 +101,32 @@ void CD2DWICDrawer::Update( double alpha_I, double sweep_I )
 	// Get value of animated variable
 	FLOAT alpha = (FLOAT)(alpha_I / 100.);
 
-	// Do some drawing here
+	// Translucent black wash
 	CComPtr<ID2D1SolidColorBrush> brush;
 	mD2DRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Red, alpha), &brush);
 	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, alpha/2));
-#if 1
+
 	// Get geometry for wedge
 	mWedge.SetArcSweep(sweep_I);
 	CComPtr<ID2D1PathGeometry> path;
-	mWedge.Geometry(path, mD2DFactory);
+	mWedge.Geometry(path);
 
 	// Create brushes
 	CComPtr<ID2D1RadialGradientBrush> lineBrush = mWedge.LineBrush(mD2DRenderTarget);
 	CComPtr<ID2D1RadialGradientBrush> areaBrush = mWedge.AreaBrush(mD2DRenderTarget);
 
-	D2D1::Matrix3x2F transformMatrix = D2D1::Matrix3x2F::Identity();
-	transformMatrix = transformMatrix * D2D1::Matrix3x2F::Rotation(-sweep_I/2);
-	transformMatrix = transformMatrix * D2D1::Matrix3x2F::Translation(600,300);
-	mD2DRenderTarget->SetTransform(transformMatrix);
+	// Draw wedges
+	DrawWedgeAtAngle( 3.*sweep_I/2, path, areaBrush, lineBrush);
+	DrawWedgeAtAngle( 1.*sweep_I/2, path, areaBrush, lineBrush);
+	DrawWedgeAtAngle(-1.*sweep_I/2, path, areaBrush, lineBrush);
+	DrawWedgeAtAngle(-3.*sweep_I/2, path, areaBrush, lineBrush);
 
-	mD2DRenderTarget->FillGeometry(path, areaBrush);
-	mD2DRenderTarget->DrawGeometry(path, lineBrush, 1.5);
-	mD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-
-
-#else
-	FLOAT interval = (FLOAT)w / sweep_I.size();
-	for (size_t i=0; i<sweep_I.size(); ++i)
-	{
-		DOUBLE y;
-		sweep_I[i]->GetValue(&y);
-		D2D1_ROUNDED_RECT r =
-		{
-			{ (FLOAT)i*10, (FLOAT)y, (FLOAT)(interval*(i+1) - interval/2)+100, (FLOAT)y+100 },
-			10,10
-		};
-		mD2DRenderTarget->DrawRoundedRectangle(r, brush, (FLOAT)alphaD/2);
-	}
-#endif
+	// Draw center circle
+	mD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Translation(600,300));
+	D2D1_ELLIPSE center = D2D1::Ellipse(D2D1::Point2F(), 45., 45.);
+	mD2DRenderTarget->FillEllipse(center, areaBrush);
+	mD2DRenderTarget->DrawEllipse(center, lineBrush, 1.5);
 
 	// Text label
 	{
@@ -169,3 +157,17 @@ void CD2DWICDrawer::Update( double alpha_I, double sweep_I )
 	}
 }
 
+void CD2DWICDrawer::DrawWedgeAtAngle( 
+												 double angle_I, 
+												 CComPtr<ID2D1PathGeometry> path,
+												 CComPtr<ID2D1RadialGradientBrush> areaBrush,
+												 CComPtr<ID2D1RadialGradientBrush> lineBrush )
+{
+	D2D1::Matrix3x2F transformMatrix = D2D1::Matrix3x2F::Identity()
+		* D2D1::Matrix3x2F::Rotation((FLOAT)angle_I)
+		* D2D1::Matrix3x2F::Translation(600,300);
+	mD2DRenderTarget->SetTransform(transformMatrix);
+	mD2DRenderTarget->FillGeometry(path, areaBrush);
+	mD2DRenderTarget->DrawGeometry(path, lineBrush, 1.5);
+	mD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+}

@@ -207,6 +207,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\WedgeDrawer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\WTLAlphaTest.cpp"
 				>
 			</File>
