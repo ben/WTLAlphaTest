@@ -79,6 +79,7 @@ void CAnimatedAlphaWindow::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 	if (nChar == 'A')
 	{
 		SwapSize();
+		Update();
 	}
 
 	if (nChar == ' ')

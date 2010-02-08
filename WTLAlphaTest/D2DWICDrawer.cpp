@@ -54,6 +54,8 @@ void CD2DWICDrawer::Initialize( HWND hwnd_I )
 
 void CD2DWICDrawer::UpdateSize( WTL::CRect rect_I )
 {
+	DiscardDeviceResources();
+
 	mLocation = rect_I.TopLeft();
 
 	mWICbmp.Release();
