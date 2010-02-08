@@ -16,6 +16,7 @@ CAnimatedAlphaWindow::CAnimatedAlphaWindow()
 , mGdiDrawer( new GdiplusDrawer() )
 , mD2DWICDrawer( new CD2DWICDrawer() )
 , mCurrentDrawer( NULL )
+, mCurrentSweep( 45. )
 {
 #if 1
 	mCurrentDrawer = (IDrawer *)mD2DWICDrawer.get();
@@ -48,7 +49,7 @@ void CAnimatedAlphaWindow::Initialize()
 
 	// Create animation variable(s)
 	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(LARGE, &mAlphaVar));
-	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(45., &mSweepVar));
+	ASSERT_SUCCEEDED(mAnimMgr->CreateAnimationVariable(mCurrentSweep, &mSweepVar));
 }
 
 void CAnimatedAlphaWindow::OnLButtonUp( UINT nFlags, CPoint point )
@@ -91,9 +92,9 @@ void CAnimatedAlphaWindow::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
 
 	if (nChar == 'J' || nChar == 'K')
 	{
-		double oldSweep;
-		mSweepVar->GetValue(&oldSweep);
-		AnimateSweepTo(nChar == 'K' ? oldSweep + 5. : oldSweep - 5.);
+		double newSweep = (nChar == 'K' ? mCurrentSweep + 15. : mCurrentSweep - 15.);
+		AnimateSweepTo(newSweep);
+		mCurrentSweep = newSweep;
 	}
 }
 

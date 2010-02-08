@@ -42,6 +42,7 @@ private:
 
 	boost::shared_ptr<AnimTimerEventHandler> mEventHandler;
 	double mNextAlphaValue;
+	double mCurrentSweep;
 
 	IDrawer *mCurrentDrawer;
 	std::auto_ptr<GdiplusDrawer> mGdiDrawer;

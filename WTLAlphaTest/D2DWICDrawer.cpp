@@ -106,18 +106,25 @@ void CD2DWICDrawer::Update( double alpha_I, double sweep_I )
 		D2D1::ColorF(D2D1::ColorF::Red, alpha), &brush);
 	mD2DRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black, alpha/2));
 #if 1
+	// Get geometry for wedge
 	mWedge.SetArcSweep(sweep_I);
 	CComPtr<ID2D1PathGeometry> path;
-	mD2DFactory->CreatePathGeometry( &path );
-	mWedge.Geometry(path);
+	mWedge.Geometry(path, mD2DFactory);
 
-	mD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Translation(600,600));
-	mD2DRenderTarget->DrawGeometry(path, brush, alpha*100.);
-	//mD2DRenderTarget->DrawEllipse(
-	//	D2D1::Ellipse(
-	//		D2D1::Point2F(w/2,h/2),
-	//		w/2, h/2),
-	//	brush, (FLOAT)alphaD);
+	// Create brushes
+	CComPtr<ID2D1RadialGradientBrush> lineBrush = mWedge.LineBrush(mD2DRenderTarget);
+	CComPtr<ID2D1RadialGradientBrush> areaBrush = mWedge.AreaBrush(mD2DRenderTarget);
+
+	D2D1::Matrix3x2F transformMatrix = D2D1::Matrix3x2F::Identity();
+	transformMatrix = transformMatrix * D2D1::Matrix3x2F::Rotation(-sweep_I/2);
+	transformMatrix = transformMatrix * D2D1::Matrix3x2F::Translation(600,300);
+	mD2DRenderTarget->SetTransform(transformMatrix);
+
+	mD2DRenderTarget->FillGeometry(path, areaBrush);
+	mD2DRenderTarget->DrawGeometry(path, lineBrush, 1.5);
+	mD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+
 #else
 	FLOAT interval = (FLOAT)w / sweep_I.size();
 	for (size_t i=0; i<sweep_I.size(); ++i)
