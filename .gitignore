@@ -3,3 +3,5 @@ Release
 *.ncb
 *.suo
 *.user
+*.sdf
+*.opensdf
