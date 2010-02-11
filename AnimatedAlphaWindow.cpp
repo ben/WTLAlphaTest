@@ -27,10 +27,18 @@ CAnimatedAlphaWindow::CAnimatedAlphaWindow()
 
 void CAnimatedAlphaWindow::Initialize()
 {
+	UUID
+		myCLSID_UIAnimationManager,
+		myCLSID_UIAnimationTimer,
+		myCLSID_UIAnimationTransitionLibrary;
+	UuidFromString((RPC_WSTR)L"4C1FC63A-695C-47E8-A339-1A194BE3D0B8", &myCLSID_UIAnimationManager);
+	UuidFromString((RPC_WSTR)L"BFCD4A0C-06B6-4384-B768-0DAA792C380E", &myCLSID_UIAnimationTimer);
+	UuidFromString((RPC_WSTR)L"1D6322AD-AA85-4EF5-A828-86D71067D145", &myCLSID_UIAnimationTransitionLibrary);
+
 	// Initialize WAM objects
-	ASSERT_SUCCEEDED(mAnimMgr.CoCreateInstance(CLSID_UIAnimationManager));
-	ASSERT_SUCCEEDED(mAnimTimer.CoCreateInstance(CLSID_UIAnimationTimer));
-	ASSERT_SUCCEEDED(mTransLib.CoCreateInstance(CLSID_UIAnimationTransitionLibrary)); 
+	ASSERT_SUCCEEDED(mAnimMgr.CoCreateInstance(myCLSID_UIAnimationManager));
+	ASSERT_SUCCEEDED(mAnimTimer.CoCreateInstance(myCLSID_UIAnimationTimer));
+	ASSERT_SUCCEEDED(mTransLib.CoCreateInstance(myCLSID_UIAnimationTransitionLibrary)); 
 
 	// Connect the animation manager to the timer
 	// UI_ANIMATION_IDLE_BEHAVIOR_DISABLE tells the timer to shut itself off when there is nothing to

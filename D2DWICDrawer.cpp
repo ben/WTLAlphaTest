@@ -33,8 +33,9 @@ void CD2DWICDrawer::Initialize( HWND hwnd_I )
 	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mD2DFactory);
 	mWedge.SetFactory(mD2DFactory);
 
+	UUID myCLSID_WICImagingFactory = {0xcacaf262, 0x9370, 0x4615, 0xa1, 0x3b, 0x9f, 0x55, 0x39, 0xda, 0x4c, 0xa};
 	mWICFactory.Release();
-	mWICFactory.CoCreateInstance(CLSID_WICImagingFactory);
+	mWICFactory.CoCreateInstance(myCLSID_WICImagingFactory);
 
 	mDWTextFormat.Release();
 	CComPtr<IDWriteFactory> dwFactory;
@@ -58,9 +59,10 @@ void CD2DWICDrawer::UpdateSize( WTL::CRect rect_I )
 
 	mLocation = rect_I.TopLeft();
 
+	UUID myGUID_WICPixelFormat32bppPBGRA = {0x6fddc324, 0x4e03, 0x4bfe, 0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x10};
 	mWICbmp.Release();
 	mWICFactory->CreateBitmap(rect_I.Width(), rect_I.Height(),
-		GUID_WICPixelFormat32bppPBGRA, WICBitmapCacheOnLoad, &mWICbmp);
+		myGUID_WICPixelFormat32bppPBGRA, WICBitmapCacheOnLoad, &mWICbmp);
 }
 
 void CD2DWICDrawer::CreateDeviceResources()
